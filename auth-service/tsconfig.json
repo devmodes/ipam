@@ -1,6 +1,7 @@
 {
   "include": ["src/**/*.ts"],
   "exclude": ["node_modules"],
+  "files": ["src/types/express.d.ts"],
   "compilerOptions": {
     /* Language and Environment */
     "target": "es2016" /* Set the JavaScript language version for emitted JavaScript and include compatible library declarations. */,
@@ -9,10 +10,12 @@
     "module": "commonjs" /* Specify what module code is generated. */,
     "baseUrl": "./" /* Specify the base directory to resolve non-relative module names. */,
     "paths": {
+      "@config/*": ["./src/config/*"],
       "@controllers/*": ["./src/controllers/*"],
       "@middlewares/*": ["./src/middlewares/*"],
       "@routes/*": ["./src/routes/*"],
-      "@config/*": ["./src/config/*"],
+      "@schema/*": ["./src/schema/*"],
+      "@types/*": ["./src/types/*"],
       "@utils/*": ["./src/utils/*"]
     } /* Specify a set of entries that re-map imports to additional lookup locations. */,
     "esModuleInterop": true /* Emit additional JavaScript to ease support for importing CommonJS modules. This enables 'allowSyntheticDefaultImports' for type compatibility. */,

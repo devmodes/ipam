@@ -24,7 +24,7 @@ services.forEach(({ route, target }: { route: string; target: string }) => {
     changeOrigin: true,
     pathRewrite: {
       [`^${route}`]: "",
-    },
+    }
   };
 
   app.use(route, rateLimitAndTimeout, createProxyMiddleware(proxyOptions));

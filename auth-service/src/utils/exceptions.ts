@@ -18,8 +18,8 @@ export class BadRequestException extends HttpException {
 }
 
 export class UnauthorizedException extends HttpException {
-  constructor() {
-    super("You dont't have permission to perform this action", 401, null);
+  constructor(message: string = "You dont't have permission to perform this action") {
+    super(message, 401, null);
   }
 }
 
