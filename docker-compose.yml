@@ -1,1 +1,10 @@
-# Main orchestration
+version: '28.0.0'
+
+services:
+  api_gateway:
+    build: ./gateway-service
+    container_name: gateway-service
+    env_file:
+      - ./gateway-service/.env
+    ports:
+      - '${APP_PORT}:3001'
