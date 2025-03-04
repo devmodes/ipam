@@ -1,7 +1,9 @@
+import { User } from "@prisma/client";
 import config from "@utils/config";
 import { UnauthorizedException, UnprocessableEntitiesException } from "@utils/exceptions";
 import { prismaClient } from "@utils/prisma";
 import { Created, Successful } from "@utils/success";
+import { Token } from "@utils/token";
 import { compareSync, hashSync } from "bcrypt";
 import { NextFunction, Request, Response } from "express";
 import jwt from "jsonwebtoken";
@@ -62,17 +64,9 @@ export const signin = async (req: Request, res: Response, next: NextFunction) =>
     next(new UnauthorizedException("Incorrect email or password"));
   }
 
-  const secret: any = config("jwt.secret");
-  const expiresIn: any = config("jwt.expire_in");
-  const refreshIn: any = config("jwt.refresh_in");
+  const token = new Token(user as User);
 
-  const accessToken = jwt.sign({
-    user: user,
-  }, secret, { expiresIn: expiresIn });
-
-  const refreshToken = jwt.sign({
-    user,
-  }, secret, {expiresIn: refreshIn});
+  const { accessToken, refreshToken } = await token.generate();
 
   res.cookie("jwt", refreshToken, {
     httpOnly: true,
@@ -97,16 +91,18 @@ export const refresh = async (req: Request, res: Response, next: NextFunction) =
       throw new UnauthorizedException();
     }
 
-    const refreshToken = req.cookies.jwt;
+    const user = req.user as User;
+    const refresh = req.cookies.jwt;
 
-    const secret: jwt.Secret = config("jwt.secret");
-    const expiresIn: any = config("jwt.expire_in");
+    const token = new Token(user);
 
-    const { user } = jwt.verify(refreshToken, secret) as jwt.JwtPayload;
+    const verified = token.validateRefresh(refresh);
 
-    const accessToken = jwt.sign({
-      user: user,
-    }, secret, { expiresIn: expiresIn });
+    if (!verified) {
+      throw new UnauthorizedException();
+    }
+
+    const { accessToken, refreshToken } = await token.generate();
 
     // Generate new access_token and refresh_token
     res.cookie("jwt", refreshToken, {
@@ -123,5 +119,18 @@ export const refresh = async (req: Request, res: Response, next: NextFunction) =
 
   } catch (error) {
     throw new UnauthorizedException();
+  }
+}
+
+export const signout = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const user = req.user as User;
+    const token = new Token(user);
+
+    token.revoke();
+
+    next(new Successful([], "Signed out successfully"));
+  } catch (error) {
+    next(new UnauthorizedException());
   }
 }
