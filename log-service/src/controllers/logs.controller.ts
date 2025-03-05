@@ -7,8 +7,6 @@ export const addLog = async (req: Request, _: Response, next: NextFunction) => {
 
   const { id, level, message, resource } = body;
 
-  console.log(req.body);
-
   const data = {
     resource_id: id,
     resource,
