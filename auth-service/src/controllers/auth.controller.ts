@@ -1,7 +1,7 @@
 import { User } from "@prisma/client";
 import config from "@utils/config";
 import { UnauthorizedException, UnprocessableEntitiesException } from "@utils/exceptions";
-import { logger } from "@utils/logger";
+import { generateLogMeta, logger } from "@utils/logger";
 import { prismaClient } from "@utils/prisma";
 import { Created, Successful } from "@utils/success";
 import { Token } from "@utils/token";
@@ -42,7 +42,7 @@ export const signup = async (req: Request, _: Response, next: NextFunction) => {
     }
   });
 
-  logger.info(`${user.name} created his account`);
+  logger.info(`${user.name} created his account`, generateLogMeta({ id: user.id }));
 
   next(new Created(user, "User account created successfully"));
 }
@@ -71,7 +71,7 @@ export const signin = async (req: Request, res: Response, next: NextFunction) =>
 
   const { accessToken } = await token.generate();
 
-  logger.info(`${user.name} Signed in to the platform`);
+  logger.info(`${user.name} Signed in to the platform`, generateLogMeta({ id: user.id }));
 
   next(new Successful({
     user: user,
@@ -145,7 +145,7 @@ export const signout = async (req: Request, res: Response, next: NextFunction) =
 
     token.revoke();
 
-    logger.info(`${user.name} Signed out of the platform`);
+    logger.info(`${user.name} Signed out of the platform`, generateLogMeta({ id: user.id }));
 
     next(new Successful([], "Signed out successfully"));
   } catch (error) {
