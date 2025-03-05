@@ -6,5 +6,9 @@
   {
     "route": "/ip-addresses",
     "target": "http://localhost:3003"
+  },
+  {
+    "route": "/activity",
+    "target": "http://localhost:9090"
   }
 ]

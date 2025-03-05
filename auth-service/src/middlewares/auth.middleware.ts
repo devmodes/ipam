@@ -40,10 +40,7 @@ export const auth = async (req: Request, res: Response, next: NextFunction) => {
       next(new UnauthorizedException());
     }
 
-    req.user = {
-      ...userModel,
-      role: userModel.role.name
-    }
+    req.user = userModel;
 
     next();
   } catch (error) {
