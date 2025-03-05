@@ -14,6 +14,15 @@ services:
       - '3002:3002'
     depends_on:
       - auth_db
+  
+  ip-service:
+    build: ./ip-service
+    env_file:
+      - ./ip-service/.env
+    ports:
+      - 3003:3003
+    depends_on:
+      - ip_service_db
 
   auth_db:
     image: postgres:16.6-alpine
@@ -23,3 +32,12 @@ services:
       POSTGRES_DB: 'auth_db'
     ports:
       - '5433:5432'
+
+  ip_service_db:
+    image: postgres:16.6-alpine
+    environment:
+      POSTGRES_USER: 'postgres'
+      POSTGRES_PASSWORD: 'admin'
+      POSTGRES_DB: 'ip_service_db'
+    ports:
+      - '5434:5432'

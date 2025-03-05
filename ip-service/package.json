@@ -4,6 +4,7 @@
   "description": "A service that will handle the IP Addresses management operations",
   "main": "index.js",
   "scripts": {
+    "migrate:dev": "npx prisma migrate deploy && npx nodemon",
     "dev": "npx nodemon",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
