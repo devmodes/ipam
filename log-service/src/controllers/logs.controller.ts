@@ -3,9 +3,15 @@ import { Created, Successful } from "@utils/success";
 import { NextFunction, Request, Response } from "express";
 
 export const addLog = async (req: Request, _: Response, next: NextFunction) => {
-  const { level, message } = req.body;
+  const body = req.body;
+
+  const { id, level, message, resource } = body;
+
+  console.log(req.body);
 
   const data = {
+    resource_id: id,
+    resource,
     level,
     message,
   };
