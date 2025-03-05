@@ -5,6 +5,6 @@
   },
   {
     "route": "/ip-addresses",
-    "target": "http://localhost:3003"
+    "target": "http://ip-service:3003"
   }
 ]
