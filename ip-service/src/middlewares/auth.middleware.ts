@@ -1,4 +1,3 @@
-import { isAuthorized } from "@services/auth.service";
 import config from "@utils/config";
 import { UnauthorizedException } from "@utils/exceptions";
 import { NextFunction, Request, Response } from "express";

@@ -1,4 +1,5 @@
 import { NotFoundException, UnauthorizedException } from "@utils/exceptions";
+import { logger } from "@utils/logger";
 import { prismaClient } from "@utils/prisma";
 import { Created, Successful } from "@utils/success";
 import { NextFunction, Request, Response } from "express";
@@ -11,6 +12,7 @@ export const createIPAddress = async (
   next: NextFunction
 ) => {
   const { label, ip, comment } = req.body;
+  const user = req.user as User;
 
   const ipAddress = await prismaClient.ipAddress.create({
     data: {
@@ -20,6 +22,8 @@ export const createIPAddress = async (
       created_by: req.user?.id as string,
     },
   });
+
+  logger.info(`The IP: ${ipAddress.ip} was created by ${user.name}`);
 
   next(new Created(ipAddress, "IP Address created successfully"));
 };
@@ -60,29 +64,32 @@ export const updateIPAddress = async (
   next: NextFunction
 ) => {
   const { id } = req.params;
+  const user = req.user as User;
 
-  let ipAddress = await prismaClient.ipAddress.findFirst({
+  let prevRecord = await prismaClient.ipAddress.findFirst({
     where: {
       id,
     },
   });
 
-  if (!ipAddress) {
+  if (!prevRecord) {
     throw new NotFoundException();
   }
 
-  if (!IPAddressPolicy.canUpdate(req.user as User, ipAddress)) {
+  if (!IPAddressPolicy.canUpdate(user, prevRecord)) {
     throw new UnauthorizedException();
   }
 
-  ipAddress = await prismaClient.ipAddress.update({
+  const ipAddress = await prismaClient.ipAddress.update({
     where: {
-      id: ipAddress.id,
+      id: prevRecord.id,
     },
     data: {
       ...req.body,
     },
   });
+
+  logger.info(`IP: ${prevRecord.ip} was updated by ${user.name}. CHANGES FROM: ${JSON.stringify(prevRecord)} CHANGES TO: ${JSON.stringify(ipAddress)}`);
 
   next(new Successful(ipAddress));
 };
@@ -93,6 +100,7 @@ export const deleteIPAddress = async (
   next: NextFunction
 ) => {
   const { id } = req.params;
+  const user = req.user as User;
 
   let ipAddress = await prismaClient.ipAddress.findFirst({
     where: {
@@ -109,6 +117,8 @@ export const deleteIPAddress = async (
       id,
     },
   });
+
+  logger.info(`IP: ${ipAddress.ip} was deleted by ${user.name}`);
 
   next(new Successful(null));
 };
