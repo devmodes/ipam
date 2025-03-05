@@ -1,10 +1,14 @@
 [
   {
     "route": "/auth",
-    "target": "http://auth-service:3002"
+    "target": "http://localhost:3002"
   },
   {
     "route": "/ip-addresses",
-    "target": "http://ip-service:3003"
+    "target": "http://localhost:3003"
+  },
+  {
+    "route": "/activity",
+    "target": "http://localhost:9090"
   }
 ]

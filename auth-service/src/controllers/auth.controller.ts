@@ -1,6 +1,7 @@
 import { User } from "@prisma/client";
 import config from "@utils/config";
 import { UnauthorizedException, UnprocessableEntitiesException } from "@utils/exceptions";
+import { logger } from "@utils/logger";
 import { prismaClient } from "@utils/prisma";
 import { Created, Successful } from "@utils/success";
 import { Token } from "@utils/token";
@@ -40,6 +41,8 @@ export const signup = async (req: Request, _: Response, next: NextFunction) => {
     }
   });
 
+  logger.info(`${user.name} created his account`);
+
   next(new Created(user, "User account created successfully"));
 }
 
@@ -73,6 +76,8 @@ export const signin = async (req: Request, res: Response, next: NextFunction) =>
     secure: true,
     maxAge: 24 * 60 * 60 * 1000,
   })
+
+  logger.info(`${user.name} Signed in to the platform`);
 
   next(new Successful({
     user: user,
@@ -127,6 +132,8 @@ export const signout = async (req: Request, res: Response, next: NextFunction) =
     const token = new Token(user);
 
     token.revoke();
+
+    logger.info(`${user.name} Signed out of the platform`);
 
     next(new Successful([], "Signed out successfully"));
   } catch (error) {
