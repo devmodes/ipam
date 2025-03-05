@@ -22,7 +22,7 @@ export const AuthProvider = ({ children, ...props }: AuthProviderProps) => {
     user: user as User,
     token: token as string,
     isSignedIn: user !== null && token !== null,
-    isAdmin: user?.role.name === "admin",
+    isAdmin: user?.role?.name === "admin",
   };
 
   return (
