@@ -62,14 +62,6 @@ function IPAddressPage() {
             </TableBody>
           </Table>
         </div>
-        {/* TODO: Only show this to admins */}
-        <div className="flex flex-col gap-4 mt-5 md:mt-0">
-          <h2 className="text-lg font-bold">IP History</h2>
-          <div className="flex items-start">
-            <Badge className="mr-3">{formatDate(data.data.created_at)}</Badge>
-            <span>Created Initial IP {data.data.ip} by: Clark Dave</span>
-          </div>
-        </div>
       </div>
     </React.Fragment>
   );
