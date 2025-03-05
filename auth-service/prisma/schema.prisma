@@ -39,11 +39,11 @@ model Role {
 }
 
 model Token {
-  id      String  @id @default(uuid())
-  access  String?
-  refresh String?
-  user_id String  @unique
-  user    User    @relation(fields: [user_id], references: [id])
+  id           String   @id @default(uuid())
+  access       String?
+  refreshed_at DateTime @default(now())
+  user_id      String   @unique
+  user         User     @relation(fields: [user_id], references: [id])
 
   @@map("tokens")
 }

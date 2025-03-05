@@ -7,6 +7,7 @@ import { Created, Successful } from "@utils/success";
 import { Token } from "@utils/token";
 import { compareSync, hashSync } from "bcrypt";
 import { NextFunction, Request, Response } from "express";
+import jwt from "jsonwebtoken";
 
 export const signup = async (req: Request, _: Response, next: NextFunction) => {
   const { email, name, password } = req.body;
@@ -68,14 +69,7 @@ export const signin = async (req: Request, res: Response, next: NextFunction) =>
 
   const token = new Token(user as User);
 
-  const { accessToken, refreshToken } = await token.generate();
-
-  res.cookie("jwt", refreshToken, {
-    httpOnly: true,
-    sameSite: 'none',
-    secure: true,
-    maxAge: 24 * 60 * 60 * 1000,
-  })
+  const { accessToken } = await token.generate();
 
   logger.info(`${user.name} Signed in to the platform`);
 
@@ -90,39 +84,57 @@ export const me = async (req: Request, _: Response, next: NextFunction) => {
 }
 
 export const refresh = async (req: Request, res: Response, next: NextFunction) => {
+  const bearerToken = req.headers.authorization as string;
+
   try {
-    if (!req.cookies.jwt) {
+    const token = bearerToken.split(" ")[1];
+    const jwtSecret = config("jwt.secret") as string;
+
+    // Verify the token to get the error code
+    jwt.verify(token, jwtSecret);
+
+    next(new Successful({message: "No need to refresh the token yet!"}));
+
+  } catch (error: any) {
+    if (error.name !== 'TokenExpiredError') {
       throw new UnauthorizedException();
     }
 
-    const user = req.user as User;
-    const refresh = req.cookies.jwt;
-
-    const token = new Token(user);
-
-    const verified = token.validateRefresh(refresh);
-
-    if (!verified) {
-      throw new UnauthorizedException();
-    }
-
-    const { accessToken, refreshToken } = await token.generate();
-
-    // Generate new access_token and refresh_token
-    res.cookie("jwt", refreshToken, {
-      httpOnly: true,
-      sameSite: 'none',
-      secure: true,
-      maxAge: 24 * 60 * 60 * 1000,
+    // Get the token's owner
+    const token = bearerToken.split(" ")[1];
+    const tokenRecord = await prismaClient.token.findFirst({
+      where: {
+        access: token,
+      }
     });
 
-    next(new Successful({
-      user,
-      token: accessToken,
-    }));
+    if (!tokenRecord) {
+      throw new UnauthorizedException();
+    }
 
-  } catch (error) {
-    throw new UnauthorizedException();
+    const user = await prismaClient.user.findFirst({
+      where: {
+        id: tokenRecord.user_id,
+      },
+      include: {
+        role: true,
+      },
+    });
+
+    if (!user) {
+      throw new UnauthorizedException();
+    }
+
+    // Get the refreshed token
+    const _token = new Token(user);
+    const refreshed = await _token.refresh(tokenRecord);
+
+    if (!refreshed) {
+      throw new UnauthorizedException("The token cannot be refreshed. please signin again");
+    }
+
+    // Return the refreshed token back to the client
+    next(new Successful({ token: refreshed?.token, user: refreshed?.user }));
   }
 }
 

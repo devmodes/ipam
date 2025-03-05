@@ -18,7 +18,6 @@ export const auth = async (req: Request, res: Response, next: NextFunction) => {
     const secret: any = config("jwt.secret");
     const decoded = jwt.verify(token, secret);
     const { user } = decoded as any;
-    console.log('USERRR: ', user);
     const userModel = await prismaClient.user.findFirst({
       where: {
         id: user.id,
@@ -34,7 +33,7 @@ export const auth = async (req: Request, res: Response, next: NextFunction) => {
 
     const _token = new Token(userModel);
 
-    const verified = await _token.validateAccess(bearerToken as string);
+    const verified = await _token.validate(bearerToken as string);
 
     if(!verified) {
       next(new UnauthorizedException());
@@ -44,7 +43,6 @@ export const auth = async (req: Request, res: Response, next: NextFunction) => {
 
     next();
   } catch (error) {
-    console.log('HEREEEE', error);
     next(new UnauthorizedException());
   }
 }

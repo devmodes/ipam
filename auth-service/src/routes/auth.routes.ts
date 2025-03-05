@@ -8,10 +8,10 @@ import { Router } from "express";
 
 const router: Router = Router();
 
+router.get("/refresh", controller(refresh));
 router.post("/signin", validate(signinSchema), controller(signin));
 router.post("/signup", validate(signupSchema), controller(signup));
 router.get("/me", auth, controller(me));
 router.post("/signout", auth, controller(signout));
-router.get("/refresh", controller(refresh));
 
 export default router;
