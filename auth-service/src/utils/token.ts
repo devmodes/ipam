@@ -2,17 +2,23 @@ import jwt, { type Secret, type JwtPayload } from "jsonwebtoken";
 import { User } from "@prisma/client";
 import config from "./config";
 import { prismaClient } from "./prisma";
+import { Token as TokenModel } from "@prisma/client";
+import moment from "moment";
 
 type TokensType = {
   accessToken: string;
-  refreshToken: string;
+}
+
+type RefreshResponse = {
+  user: User;
+  token: string;
 }
 
 export class Token {
   private user: User;
   private secret: Secret = config("jwt.secret");
   private ttl: any = config("jwt.expire_in");
-  private refreshTtl: any = config("jwt.refresh_in");
+  private refresh_ttl: any = config("jwt.refresh_in") as number;
 
   constructor(user: User) {
     this.user = user;
@@ -21,12 +27,10 @@ export class Token {
   async generate(): Promise<TokensType> {
     // Generate Access and Refresh token
     const accessToken = jwt.sign({user: this.user} as JwtPayload, this.secret, { expiresIn: this.ttl });
-    const refreshToken = jwt.sign({user: this.user} as JwtPayload, this.secret, { expiresIn: this.refreshTtl });
 
     // Attach the tokens to user in the database
     const data = {
       access: accessToken,
-      refresh: refreshToken,
       user_id: this.user.id,
     };
 
@@ -41,11 +45,10 @@ export class Token {
     // Return the tokens for use cases
     return {
       accessToken,
-      refreshToken,
     };
   }
 
-  async validateAccess(token: string): Promise<User | Boolean> {
+  async validate(token: string): Promise<User | Boolean> {
     try {
       // Always pass the token with strategies like `Bearer <TokenString>`
       const bearerToken = token.split(' ')[1];
@@ -86,32 +89,36 @@ export class Token {
     }
   }
 
-  async validateRefresh(token: string): Promise<Boolean> {
-    try {
-      // Check if the refresh token is valid
-      const { user } = jwt.verify(token, this.secret) as JwtPayload;
+  async refresh(record: TokenModel): Promise<RefreshResponse | null> {
+    const refreshable = this.refresh_ttl as number;
+    const lastRefresh = record.refreshed_at;
 
-      if (!user) {
-        return false;
-      }
-
-      // Check if it matches with the user in the process
-      if (user.id !== this.user.id) {
-        return false;
-      }
-
-      // Check if it is the current refresh token of the user
-      await prismaClient.token.findFirstOrThrow({
-        where: {
-          user_id: this.user.id,
-          refresh: token,
-        },
-      });
-
-      return true;
-    } catch (error) {
-      return false;
+    if (moment().subtract(refreshable, 'days') > moment(lastRefresh)) {
+      return null;
     }
+
+    const newToken = jwt.sign({ user: this.user }, this.secret, { expiresIn: this.ttl });
+
+    await prismaClient.token.update({
+      where: {
+        id: record.id,
+      },
+      data: {
+        access: newToken,
+        refreshed_at: new Date(),
+      },
+    });
+
+    const user = await prismaClient.user.findFirst({
+      where: {
+        id: record.user_id,
+      },
+    }) as User;
+
+    return {
+      token: newToken,
+      user,
+    };
   }
 
   async revoke(): Promise<Boolean> {
