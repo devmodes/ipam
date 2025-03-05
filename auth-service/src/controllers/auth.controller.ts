@@ -6,7 +6,6 @@ import { Created, Successful } from "@utils/success";
 import { Token } from "@utils/token";
 import { compareSync, hashSync } from "bcrypt";
 import { NextFunction, Request, Response } from "express";
-import jwt from "jsonwebtoken";
 
 export const signup = async (req: Request, _: Response, next: NextFunction) => {
   const { email, name, password } = req.body;
@@ -57,11 +56,11 @@ export const signin = async (req: Request, res: Response, next: NextFunction) =>
   });
 
   if (!user) {
-    next(new UnauthorizedException("Incorrect email or password"));
+    throw new UnauthorizedException("Incorrect email or password")
   }
 
   if (!compareSync(password, (user as any).password)) {
-    next(new UnauthorizedException("Incorrect email or password"));
+    throw new UnauthorizedException("Incorrect email or password")
   }
 
   const token = new Token(user as User);

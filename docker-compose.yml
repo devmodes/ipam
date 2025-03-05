@@ -1,10 +1,25 @@
-version: '28.0.0'
-
 services:
-  api_gateway:
+  api-gateway:
     build: ./gateway-service
-    container_name: gateway-service
     env_file:
       - ./gateway-service/.env
     ports:
-      - '${APP_PORT}:3001'
+      - '3001:3001'
+
+  auth-service:
+    build: ./auth-service
+    env_file:
+      - ./auth-service/.env
+    ports:
+      - '3002:3002'
+    depends_on:
+      - auth_db
+
+  auth_db:
+    image: postgres:16.6-alpine
+    environment:
+      POSTGRES_USER: 'postgres'
+      POSTGRES_PASSWORD: 'admin'
+      POSTGRES_DB: 'auth_db'
+    ports:
+      - '5433:5432'
