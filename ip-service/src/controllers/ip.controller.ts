@@ -1,5 +1,5 @@
 import { NotFoundException, UnauthorizedException } from "@utils/exceptions";
-import { logger } from "@utils/logger";
+import { generateLogMeta, logger } from "@utils/logger";
 import { prismaClient } from "@utils/prisma";
 import { Created, Successful } from "@utils/success";
 import { NextFunction, Request, Response } from "express";
@@ -23,7 +23,7 @@ export const createIPAddress = async (
     },
   });
 
-  logger.info(`The IP: ${ipAddress.ip} was created by ${user.name}`);
+  logger.info(`The IP: ${ipAddress.ip} was created by ${user.name}`, generateLogMeta({ id: ipAddress.id }));
 
   next(new Created(ipAddress, "IP Address created successfully"));
 };
@@ -89,7 +89,40 @@ export const updateIPAddress = async (
     },
   });
 
-  logger.info(`IP: ${prevRecord.ip} was updated by ${user.name}. CHANGES FROM: ${JSON.stringify(prevRecord)} CHANGES TO: ${JSON.stringify(ipAddress)}`);
+  const prev = {
+    id: prevRecord.id,
+    ip: prevRecord.ip,
+    label: prevRecord.label,
+    comment: prevRecord.comment,
+  };
+
+  const newIp = {
+    id: ipAddress.id,
+    ip: ipAddress.ip,
+    label: ipAddress.label,
+    comment: ipAddress.comment,
+  };
+
+  // Make sure to only log it if there are really changes to the reord
+  if (JSON.stringify(prev) !== JSON.stringify(newIp)) {
+    const logMeta = {
+      id: ipAddress.id,
+      meta: {
+        from: {
+          ip: ipAddress.ip,
+          label: ipAddress.label,
+          comment: ipAddress.comment,
+        },
+        to: {
+          ip: prevRecord.ip,
+          label: prevRecord.label,
+          comment: prevRecord.comment,
+        },
+      }
+    }
+
+    logger.info(`IP: ${prevRecord.ip} was updated by ${user.name}`, generateLogMeta(logMeta));
+  }
 
   next(new Successful(ipAddress));
 };

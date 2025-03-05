@@ -5,13 +5,14 @@ import { NextFunction, Request, Response } from "express";
 export const addLog = async (req: Request, _: Response, next: NextFunction) => {
   const body = req.body;
 
-  const { id, level, message, resource } = body;
+  const { id, level, message, resource, meta } = body;
 
   const data = {
     resource_id: id,
     resource,
     level,
     message,
+    meta,
   };
 
   await prismaClient.log.create({
