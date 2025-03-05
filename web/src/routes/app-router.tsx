@@ -6,6 +6,7 @@ import IPAddressesPage from "@pages/ip-addresses-page";
 import SigninPage from "@pages/signin-page";
 import SignupPage from "@pages/signup-page";
 import UsersPage from "@pages/users-page";
+import AdminGuard from "@routes/admin-guard";
 import AuthGuard from "@routes/auth-guard";
 import GuestOnlyGuard from "@routes/guest-only-guard";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
@@ -30,11 +31,13 @@ function AppRouter() {
       <Routes>
         <Route element={<AuthGuard />}>
           <Route path="/app" element={<DashboardLayout />}>
+            <Route element={<AdminGuard />}>
+              <Route path="audit" element={<AuditLogsPage />} />
+              <Route path="users" element={<UsersPage />} />
+            </Route>
             <Route path="" element={<h1>Dashboard</h1>} />
             <Route path="ip-address" element={<IPAddressesPage />} />
             <Route path="ip-address/:id" element={<IPAddressPage />} />
-            <Route path="users" element={<UsersPage />} />
-            <Route path="audit" element={<AuditLogsPage />} />
             <Route path="account" element={<AccountsPage />} />
           </Route>
         </Route>

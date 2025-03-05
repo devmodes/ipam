@@ -13,28 +13,37 @@ import {
   SidebarMenuItem,
 } from "@components/ui/sidebar";
 import { Link } from "react-router-dom";
+import { useAuth } from "@providers/auth-provider";
 
-const data = {
-  contents: [
-    {
-      name: "User Management",
-      url: "/app/users",
-      icon: UsersIcon,
-    },
-    {
-      name: "IP Address",
-      url: "/app/ip-address",
-      icon: NetworkIcon,
-    },
-    {
-      name: "Audit Logs",
-      url: "/app/audit",
-      icon: ActivityIcon,
-    },
-  ],
-};
+const adminMenu = [
+  {
+    name: "User Management",
+    url: "/app/users",
+    icon: UsersIcon,
+  },
+  {
+    name: "IP Address",
+    url: "/app/ip-address",
+    icon: NetworkIcon,
+  },
+  {
+    name: "Audit Logs",
+    url: "/app/audit",
+    icon: ActivityIcon,
+  },
+];
+
+const userMenu = [
+  {
+    name: "IP Address",
+    url: "/app/ip-address",
+    icon: NetworkIcon,
+  },
+];
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+  const { isAdmin } = useAuth();
+
   return (
     <Sidebar variant="inset" {...props}>
       <SidebarHeader>
@@ -57,7 +66,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         </SidebarMenu>
       </SidebarHeader>
       <SidebarContent>
-        <NavContents projects={data.contents} />
+        <NavContents projects={isAdmin ? adminMenu : userMenu} />
       </SidebarContent>
       <SidebarFooter>
         <NavUser />

@@ -4,4 +4,5 @@ export type IPAddress = {
   label: string;
   comment: string;
   created_at: Date;
+  created_by: string;
 };

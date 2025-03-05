@@ -8,6 +8,7 @@ type AuthProviderState = {
   user: User;
   token: string;
   isSignedIn?: boolean;
+  isAdmin?: boolean;
 };
 
 const AuthProviderContext = createContext<AuthProviderState | undefined>(
@@ -21,6 +22,7 @@ export const AuthProvider = ({ children, ...props }: AuthProviderProps) => {
     user: user as User,
     token: token as string,
     isSignedIn: user !== null && token !== null,
+    isAdmin: user?.role?.name === "admin",
   };
 
   return (

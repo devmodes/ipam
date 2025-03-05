@@ -23,8 +23,10 @@ const registerFormSchema = z
 type RegisterForm = z.infer<typeof registerFormSchema>;
 
 type ResponseType = {
-  user: User;
-  token: string;
+  data: {
+    user: User;
+    token: string;
+  };
 };
 
 export const useRegisterForm = (defaultValues?: RegisterForm) => {
@@ -46,8 +48,8 @@ export const useRegisterForm = (defaultValues?: RegisterForm) => {
 
       dispatch(
         authenticate({
-          user: res.user,
-          token: res.token,
+          user: res.data.user,
+          token: res.data.token,
         })
       );
 

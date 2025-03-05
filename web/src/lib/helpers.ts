@@ -13,3 +13,7 @@ export const getInitials = (text: string) => {
 export const formatDate = (date: Date): string => {
   return moment(date).format("DD MMM YYYY");
 };
+
+export const formatDateTime = (date: Date): string => {
+  return moment(date).format("hh:mm a, DD MMM YYYY");
+};

@@ -1,6 +1,7 @@
 import CreateIPDialog from "@components/dialogs/create-ip-dialog";
 import DeleteIPDialog from "@components/dialogs/delete-ip-dialog";
 import EditIPDialog from "@components/dialogs/edit-ip-dialog";
+import EditIPLabelDialog from "@components/dialogs/edit-ip-label-dialog";
 import { Button } from "@components/ui/button";
 import {
   Table,
@@ -12,7 +13,9 @@ import {
   TableRow,
 } from "@components/ui/table";
 import { IPAddress } from "@lib/types/ip-address";
+import { useAuth } from "@providers/auth-provider";
 import { Edit3Icon, EyeIcon, TrashIcon } from "lucide-react";
+import React from "react";
 import { useNavigate } from "react-router-dom";
 
 type IPAddressTableProps = {
@@ -20,6 +23,7 @@ type IPAddressTableProps = {
 };
 
 function IPAddressTable({ items }: IPAddressTableProps) {
+  const { isAdmin, user } = useAuth();
   const navigate = useNavigate();
 
   if (!items.length) {
@@ -69,16 +73,33 @@ function IPAddressTable({ items }: IPAddressTableProps) {
                   >
                     <EyeIcon />
                   </Button>
-                  <EditIPDialog item={item}>
-                    <Button size="sm" variant="ghost">
-                      <Edit3Icon />
-                    </Button>
-                  </EditIPDialog>
-                  <DeleteIPDialog item={item}>
-                    <Button size="sm" variant="ghost">
-                      <TrashIcon />
-                    </Button>
-                  </DeleteIPDialog>
+                  {!isAdmin && user.id !== item.created_by ? (
+                    <EditIPLabelDialog item={item}>
+                      <Button size="sm" variant="ghost">
+                        <Edit3Icon />
+                      </Button>
+                    </EditIPLabelDialog>
+                  ) : (
+                    <EditIPDialog item={item}>
+                      <Button size="sm" variant="ghost">
+                        <Edit3Icon />
+                      </Button>
+                    </EditIPDialog>
+                  )}
+                  {isAdmin && (
+                    <React.Fragment>
+                      <EditIPDialog item={item}>
+                        <Button size="sm" variant="ghost">
+                          <Edit3Icon />
+                        </Button>
+                      </EditIPDialog>
+                      <DeleteIPDialog item={item}>
+                        <Button size="sm" variant="ghost">
+                          <TrashIcon />
+                        </Button>
+                      </DeleteIPDialog>
+                    </React.Fragment>
+                  )}
                 </TableCell>
               </TableRow>
             ))}

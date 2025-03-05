@@ -24,7 +24,7 @@ export const signup = async (req: Request, _: Response, next: NextFunction) => {
     });
   }
 
-  const user = await prismaClient.user.create({
+  const created = await prismaClient.user.create({
     data: {
       name,
       email,
@@ -42,9 +42,25 @@ export const signup = async (req: Request, _: Response, next: NextFunction) => {
     }
   });
 
+  const user = await prismaClient.user.findFirst({
+    where: {
+      id: created.id,
+    },
+    include: {
+      role: true,
+    }
+  }) as User;
+
+  const token = new Token(user as User);
+
+  const { accessToken } = await token.generate();
+
   logger.info(`${user.name} created his account`, generateLogMeta({ id: user.id }));
 
-  next(new Created(user, "User account created successfully"));
+  next(new Successful({
+    user: user,
+    token: accessToken
+  }));
 }
 
 export const signin = async (req: Request, res: Response, next: NextFunction) => {
