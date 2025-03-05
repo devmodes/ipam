@@ -14,6 +14,8 @@ export const controller = (method: Function) => {
         exception = new InternalServerException(null);
       }
 
+      console.log(error);
+
       next(exception);
     }
   };
