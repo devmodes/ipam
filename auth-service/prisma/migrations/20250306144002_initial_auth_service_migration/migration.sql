@@ -25,7 +25,7 @@ CREATE TABLE "roles" (
 CREATE TABLE "tokens" (
     "id" TEXT NOT NULL,
     "access" TEXT,
-    "refresh" TEXT,
+    "refreshed_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "user_id" TEXT NOT NULL,
 
     CONSTRAINT "tokens_pkey" PRIMARY KEY ("id")
@@ -45,9 +45,6 @@ ALTER TABLE "users" ADD CONSTRAINT "users_role_id_fkey" FOREIGN KEY ("role_id") 
 
 -- AddForeignKey
 ALTER TABLE "tokens" ADD CONSTRAINT "tokens_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
-
--- Ensure the pgcrypto extension is enabled for UUID generation
-CREATE EXTENSION IF NOT EXISTS "pgcrypto";
 
 -- Insert roles
 INSERT INTO roles (id, name) VALUES

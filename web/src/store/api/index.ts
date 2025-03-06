@@ -19,7 +19,7 @@ type ResponseType = {
 };
 
 const baseQuery = fetchBaseQuery({
-  baseUrl: "http://localhost:3001",
+  baseUrl: import.meta.env.VITE_BASE_API_URL,
   prepareHeaders(headers, { getState }) {
     headers.set("Accept", "application/json");
 
@@ -66,6 +66,6 @@ const baseQueryWithReauth: BaseQueryFn<
 export const api = createApi({
   reducerPath: "api",
   baseQuery: baseQueryWithReauth,
-  tagTypes: ["ipAddress"],
+  tagTypes: ["ipAddress", "logs"],
   endpoints: () => ({}),
 });

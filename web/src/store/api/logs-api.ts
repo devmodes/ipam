@@ -6,6 +6,7 @@ export const logsApi = api.injectEndpoints({
       query: () => ({
         url: "/activity/logs",
       }),
+      providesTags: [{ type: "logs", id: "list" }],
     }),
   }),
 });

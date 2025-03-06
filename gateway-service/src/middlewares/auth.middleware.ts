@@ -1,7 +1,7 @@
 import axios from "axios";
 import { NextFunction, Request, Response } from "express";
 
-const AUTH_BASE_URL = "http://localhost:3002";
+const AUTH_BASE_URL = "http://auth-service:3002";
 
 const isAuthorized = (token?: string) => {
   return new Promise((resolve, reject) => {
