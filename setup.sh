@@ -12,3 +12,5 @@ cp ./log-service/.env.example ./log-service/.env
 
 # Setup web env variables
 cp ./web/.env.example ./web/.env
+
+echo "Done!"
