@@ -1,5 +1,6 @@
 import { DashboardLayout } from "@layouts/dashboard-layout";
 import AccountsPage from "@pages/accounts-page";
+import AppDashboardPage from "@pages/app-dashboard-page";
 import AuditLogsPage from "@pages/audit-logs-page";
 import IPAddressPage from "@pages/ip-address-page";
 import IPAddressesPage from "@pages/ip-addresses-page";
@@ -33,7 +34,7 @@ function AppRouter() {
             <Route element={<AdminGuard />}>
               <Route path="audit" element={<AuditLogsPage />} />
             </Route>
-            <Route path="" element={<h1>Dashboard</h1>} />
+            <Route path="" element={<AppDashboardPage />} />
             <Route path="ip-address" element={<IPAddressesPage />} />
             <Route path="ip-address/:id" element={<IPAddressPage />} />
             <Route path="account" element={<AccountsPage />} />
