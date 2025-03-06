@@ -4,11 +4,15 @@
 
 1. Clone the application
 
-`git clone https://github.com/devmodes/ipam.git`
+```
+git clone https://github.com/devmodes/ipam.git
+```
 
 2. Navigate to the cloned project
 
-`cd ipam`
+```
+cd ipam
+```
 
 3. Setup the `.env` variables by copying each the `.env.example` on each services.
 
