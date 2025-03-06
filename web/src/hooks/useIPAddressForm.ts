@@ -1,4 +1,6 @@
 import { zodResolver } from "@hookform/resolvers/zod";
+import { handleError } from "@lib/error-handler";
+import { IPAddress } from "@lib/types/ip-address";
 import {
   useCreateIPAddressMutation,
   useUpdateIPAddressMutation,
@@ -28,6 +30,7 @@ export const useIPAddressForm = ({ defaultValues, id }: IPAddressFormArgs) => {
   });
   const {
     handleSubmit,
+    setError,
     formState: { isSubmitting, isSubmitSuccessful },
   } = form;
 
@@ -39,18 +42,21 @@ export const useIPAddressForm = ({ defaultValues, id }: IPAddressFormArgs) => {
           label: data.label,
           ip: data.ip,
           comment: data.comment || "",
-        };
+        } as IPAddress;
 
         await updateRecord(body);
       } else {
-        await createRecord({
+        const body = {
           label: data.label,
           ip: data.ip,
           comment: data.comment || "",
-        });
-        data;
+        } as IPAddress;
+
+        await createRecord(body);
       }
-    } catch (error: any) {}
+    } catch (error: any) {
+      handleError(setError, error);
+    }
   };
 
   return {

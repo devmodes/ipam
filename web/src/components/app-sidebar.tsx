@@ -1,5 +1,5 @@
 import * as React from "react";
-import { ActivityIcon, Command, NetworkIcon, UsersIcon } from "lucide-react";
+import { ActivityIcon, Command, NetworkIcon } from "lucide-react";
 
 import { NavContents } from "@components/nav-projects";
 import { NavUser } from "@components/nav-user";
@@ -16,11 +16,6 @@ import { Link } from "react-router-dom";
 import { useAuth } from "@providers/auth-provider";
 
 const adminMenu = [
-  {
-    name: "User Management",
-    url: "/app/users",
-    icon: UsersIcon,
-  },
   {
     name: "IP Address",
     url: "/app/ip-address",

@@ -127,6 +127,36 @@ export const updateIPAddress = async (
   next(new Successful(ipAddress));
 };
 
+export const updateIPAddressLabel = async (req: Request, _: Response, next: NextFunction) => {
+  const user = req.user as User;
+  
+  const { id } = req.params;
+  const { label } = req.body;
+
+  const prevRecord = await prismaClient.ipAddress.findFirst({
+    where: {
+      id,
+    },
+  });
+
+  if (!prevRecord) {
+    throw new NotFoundException();
+  }
+
+  const updated = await prismaClient.ipAddress.update({
+    where: {
+      id,
+    },
+    data: {
+      label,
+    },
+  });
+
+  logger.info(`${prevRecord.ip} label was updated by ${user.name} from ${prevRecord.label} to ${updated.label}`);
+
+  next(new Successful(updated));
+}
+
 export const deleteIPAddress = async (
   req: Request,
   res: Response,

@@ -1,6 +1,6 @@
 import { Badge } from "@components/ui/badge";
-import { Card, CardContent, CardHeader, CardTitle } from "@components/ui/card";
-import { formatDate } from "@lib/helpers";
+import { Card, CardHeader, CardTitle } from "@components/ui/card";
+import { formatDateTime } from "@lib/helpers";
 import { ActivityLog } from "@lib/types/activity-log";
 
 type ActivityItemListProps = {
@@ -17,6 +17,9 @@ function ActivityRow({ item }: ActivityRowProps) {
       <CardHeader className="px-4">
         <CardTitle className="flex items-center gap-2">
           <Badge variant="secondary">{item.resource}</Badge>
+          <div className="text-muted-foreground">
+            {formatDateTime(item.created_at)}
+          </div>
           <div className="text-sm font-semibold text-muted-secondary">
             {item.message}
           </div>
