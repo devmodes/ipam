@@ -27,3 +27,25 @@ or run `bash setup.sh` in your git bash if you are on windows
 5. After building the containers you can run `docker compose up`
 
 6. Once it finishes with the running and there is no error you can visit the app in `http://localhost:3000`
+
+### Credentials
+
+1. Admin account
+
+```
+Email:
+john@admin.com
+
+Password:
+password
+```
+
+2. User Account
+
+```
+Email:
+jane@user.com
+
+Password:
+password
+```
