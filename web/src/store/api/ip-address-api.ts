@@ -30,6 +30,14 @@ export const ipAddressApi = api.injectEndpoints({
       }),
       invalidatesTags: [{ type: "ipAddress", id: "list" }],
     }),
+    updateIPAddressLabel: builder.mutation({
+      query: (data: Pick<IPAddress, "label" | "id">) => ({
+        url: `/ip-addresses/label/${data.id}`,
+        method: "PUT",
+        body: data,
+      }),
+      invalidatesTags: [{ type: "ipAddress", id: "list" }],
+    }),
     deleteIPAddress: builder.mutation({
       query: (id: string) => ({
         url: `/ip-addresses/${id}`,
@@ -46,5 +54,6 @@ export const {
   useIpAddressListQuery,
   useGetIPAddressQuery,
   useUpdateIPAddressMutation,
+  useUpdateIPAddressLabelMutation,
   useDeleteIPAddressMutation,
 } = ipAddressApi;

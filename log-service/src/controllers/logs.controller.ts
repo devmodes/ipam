@@ -23,7 +23,11 @@ export const addLog = async (req: Request, _: Response, next: NextFunction) => {
 };
 
 export const getLogs = async (req: Request, res: Response, next: NextFunction) => {
-  const logs = await prismaClient.log.findMany();
+  const logs = await prismaClient.log.findMany({
+    orderBy: {
+      created_at: 'desc',
+    }
+  });
 
   next(new Successful(logs, "Logs Fetched successfully"));
 }
