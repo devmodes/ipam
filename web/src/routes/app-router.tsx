@@ -5,7 +5,6 @@ import IPAddressPage from "@pages/ip-address-page";
 import IPAddressesPage from "@pages/ip-addresses-page";
 import SigninPage from "@pages/signin-page";
 import SignupPage from "@pages/signup-page";
-import UsersPage from "@pages/users-page";
 import AdminGuard from "@routes/admin-guard";
 import AuthGuard from "@routes/auth-guard";
 import GuestOnlyGuard from "@routes/guest-only-guard";
@@ -33,7 +32,6 @@ function AppRouter() {
           <Route path="/app" element={<DashboardLayout />}>
             <Route element={<AdminGuard />}>
               <Route path="audit" element={<AuditLogsPage />} />
-              <Route path="users" element={<UsersPage />} />
             </Route>
             <Route path="" element={<h1>Dashboard</h1>} />
             <Route path="ip-address" element={<IPAddressesPage />} />

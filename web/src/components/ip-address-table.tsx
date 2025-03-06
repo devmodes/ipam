@@ -73,13 +73,14 @@ function IPAddressTable({ items }: IPAddressTableProps) {
                   >
                     <EyeIcon />
                   </Button>
-                  {!isAdmin && user.id !== item.created_by ? (
+                  {!isAdmin && user.id !== item.created_by && (
                     <EditIPLabelDialog item={item}>
                       <Button size="sm" variant="ghost">
                         <Edit3Icon />
                       </Button>
                     </EditIPLabelDialog>
-                  ) : (
+                  )}
+                  {!isAdmin && user.id === item.created_by && (
                     <EditIPDialog item={item}>
                       <Button size="sm" variant="ghost">
                         <Edit3Icon />
