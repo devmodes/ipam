@@ -47,6 +47,7 @@ http://localhost:3000
 ### Credentials
 
 1. Admin account
+
 Email:
 ```
 john@admin.com
@@ -57,6 +58,7 @@ password
 ```
 
 2. User Account
+
 Email:
 ```
 jane@user.com
