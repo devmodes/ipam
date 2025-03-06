@@ -1,4 +1,13 @@
 services:
+  web:
+    build: ./web
+    container_name: web
+    restart: always
+    ports:
+      - '3000:3000'
+    volumes:
+      - ./web:/app
+      - /app/node_modules
   api-gateway:
     build: ./gateway-service
     env_file:
@@ -24,6 +33,15 @@ services:
     depends_on:
       - ip_service_db
 
+  log-service:
+    build: ./log-service
+    env_file:
+      - ./log-service/.env
+    ports:
+      - 9090:9090
+    depends_on:
+      - log_service_db
+
   auth_db:
     image: postgres:16.6-alpine
     environment:
@@ -41,3 +59,12 @@ services:
       POSTGRES_DB: 'ip_service_db'
     ports:
       - '5434:5432'
+
+  log_service_db:
+    image: postgres:16.6-alpine
+    environment:
+      POSTGRES_USER: 'postgres'
+      POSTGRES_PASSWORD: 'admin'
+      POSTGRES_DB: 'log_service_db'
+    ports:
+      - '5435:5432'

@@ -9,13 +9,13 @@ export const ipAddressApi = api.injectEndpoints({
         method: "POST",
         body: data,
       }),
-      invalidatesTags: [{ type: "ipAddress", id: "list" }],
+      invalidatesTags: [{ type: "ipAddress", id: "list" }, { type: "logs", id: "list" }],
     }),
     ipAddressList: builder.query({
       query: () => ({
         url: "/ip-addresses",
       }),
-      providesTags: [{ type: "ipAddress", id: "list" }],
+      providesTags: [{ type: "ipAddress", id: "list" }, { type: "logs", id: "list" }],
     }),
     getIPAddress: builder.query({
       query: (id: string) => ({
@@ -28,7 +28,7 @@ export const ipAddressApi = api.injectEndpoints({
         method: "PUT",
         body: data,
       }),
-      invalidatesTags: [{ type: "ipAddress", id: "list" }],
+      invalidatesTags: [{ type: "ipAddress", id: "list" }, { type: "logs", id: "list" }],
     }),
     updateIPAddressLabel: builder.mutation({
       query: (data: Pick<IPAddress, "label" | "id">) => ({
@@ -36,14 +36,14 @@ export const ipAddressApi = api.injectEndpoints({
         method: "PUT",
         body: data,
       }),
-      invalidatesTags: [{ type: "ipAddress", id: "list" }],
+      invalidatesTags: [{ type: "ipAddress", id: "list" }, { type: "logs", id: "list" }],
     }),
     deleteIPAddress: builder.mutation({
       query: (id: string) => ({
         url: `/ip-addresses/${id}`,
         method: "DELETE",
       }),
-      invalidatesTags: [{ type: "ipAddress", id: "list" }],
+      invalidatesTags: [{ type: "ipAddress", id: "list" }, { type: "logs", id: "list" }],
     }),
   }),
   overrideExisting: false,
