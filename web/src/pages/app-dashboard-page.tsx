@@ -1,6 +1,5 @@
 import IPAddressList from "@components/ip-address-list";
 import { useIpAddressListQuery } from "@store/api/ip-address-api";
-import React from "react";
 
 function AppDashboardPage() {
   const { data, isError, isFetching } = useIpAddressListQuery({});

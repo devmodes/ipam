@@ -2,6 +2,7 @@ import { DashboardLayout } from "@layouts/dashboard-layout";
 import AccountsPage from "@pages/accounts-page";
 import AppDashboardPage from "@pages/app-dashboard-page";
 import AuditLogsPage from "@pages/audit-logs-page";
+import HomePage from "@pages/home-page";
 import IPAddressPage from "@pages/ip-address-page";
 import IPAddressesPage from "@pages/ip-addresses-page";
 import SigninPage from "@pages/signin-page";
@@ -16,7 +17,7 @@ function AppRouter() {
     <BrowserRouter>
       {/* Public Routes */}
       <Routes>
-        <Route path="/" element={<h1>Home Page</h1>} />
+        <Route path="/" element={<HomePage />} />
       </Routes>
 
       {/* Strict Guest Only Routes */}
