@@ -113,6 +113,9 @@ export class Token {
       where: {
         id: record.user_id,
       },
+      include: {
+        role: true,
+      }
     }) as User;
 
     return {
