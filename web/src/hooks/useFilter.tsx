@@ -9,11 +9,14 @@ import {
 } from "@components/ui/dropdown-menu";
 import { Input } from "@components/ui/input";
 import { useDebounce } from "@hooks/useDebounce";
+import { Filters } from "@lib/types/filters";
 import { useState } from "react";
 
 export const useFilter = () => {
   const [search, setSearch] = useState("");
   const [sort, setSort] = useState<"asc" | "desc">("desc");
+  const [page, setPage] = useState(1);
+  const [perPage, setPerPage] = useState(10);
   const debouncedSearch = useDebounce(search, 500);
 
   const render = () => {
@@ -42,13 +45,46 @@ export const useFilter = () => {
             </DropdownMenuGroup>
           </DropdownMenuContent>
         </DropdownMenu>
+
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="outline">Per Page {perPage}</Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent>
+            <DropdownMenuGroup>
+              <DropdownMenuLabel>Records per page</DropdownMenuLabel>
+              <DropdownMenuItem onClick={() => setPerPage(10)}>
+                10
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => setPerPage(25)}>
+                25
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => setPerPage(50)}>
+                50
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => setPerPage(100)}>
+                100
+              </DropdownMenuItem>
+            </DropdownMenuGroup>
+          </DropdownMenuContent>
+        </DropdownMenu>
       </div>
     );
   };
 
-  return {
-    render,
+  const filters: Filters = {
     search: debouncedSearch,
     sort,
+    page,
+    per_page: perPage,
+  };
+
+  return {
+    filters,
+    render,
+    setPage,
+    setPerPage,
+    setSort,
+    setSearch,
   };
 };

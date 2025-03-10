@@ -12,6 +12,9 @@ services:
     build: ./gateway-service
     env_file:
       - ./gateway-service/.env
+    volumes:
+      - ./gateway-service:/app
+      - /app/node_modules
     ports:
       - '3001:3001'
 
@@ -19,6 +22,9 @@ services:
     build: ./auth-service
     env_file:
       - ./auth-service/.env
+    volumes:
+      - ./auth-service:/app
+      - /app/node_modules
     ports:
       - '3002:3002'
     depends_on:
@@ -28,6 +34,9 @@ services:
     build: ./ip-service
     env_file:
       - ./ip-service/.env
+    volumes:
+      - ./ip-service:/app
+      - /app/node_modules
     ports:
       - 3003:3003
     depends_on:
@@ -37,6 +46,9 @@ services:
     build: ./log-service
     env_file:
       - ./log-service/.env
+    volumes:
+      - ./log-service:/app
+      - /app/node_modules
     ports:
       - 9090:9090
     depends_on:

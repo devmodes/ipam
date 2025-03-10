@@ -33,12 +33,17 @@ export const getIPAddresses = async (
   res: Response,
   next: NextFunction
 ) => {
-  const { search, sort } = req.query;
+  const { search, sort = "desc", page = 1, per_page = 10 } = req.query;
+
+  const skip = (Number(page) - 1) * Number(per_page);
+  const take = Number(page) * Number(per_page);
 
   let filters: any = {
     orderBy: {
       created_at: sort as "asc" | "desc" || "desc",
-    }
+    },
+    skip,
+    take,
   }
 
   if (search) {
@@ -67,8 +72,21 @@ export const getIPAddresses = async (
   }
 
   const ipAddresses = await prismaClient.ipAddress.findMany(filters);
+  const ipAddressCount = await prismaClient.ipAddress.count();
+  const totalPages = Math.ceil(ipAddressCount / Number(per_page));
 
-  next(new Successful(ipAddresses));
+  const paginationMeta = {
+    currentPage: Number(page),
+    hasPrevPage: Number(page) !== 1,
+    hasNextPage: Number(page) < totalPages,
+    totalRecords: ipAddressCount,
+    totalPages: totalPages,
+  }
+
+  next(new Successful({
+    items: ipAddresses,
+    pagination_meta: paginationMeta,
+  }));
 };
 
 export const getIPAddress = async (

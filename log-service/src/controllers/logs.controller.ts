@@ -23,12 +23,17 @@ export const addLog = async (req: Request, _: Response, next: NextFunction) => {
 };
 
 export const getLogs = async (req: Request, res: Response, next: NextFunction) => {
-  const { search, sort } = req.query;
+  const { search, sort = "desc", page = 1, per_page = 10 } = req.query;
+
+  const skip = (Number(page) - 1) * Number(per_page);
+  const take = Number(page) * Number(per_page);
 
   let filters: any = {
     orderBy: {
       created_at: sort as "asc" | "desc" || "desc",
-    }
+    },
+    skip,
+    take,
   };
 
   if (search) {
