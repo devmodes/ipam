@@ -2,9 +2,13 @@ import { Badge } from "@components/ui/badge";
 import { Card, CardHeader, CardTitle } from "@components/ui/card";
 import { formatDateTime } from "@lib/helpers";
 import { ActivityLog } from "@lib/types/activity-log";
+import { useGetActivityLogsQuery } from "@store/api/logs-api";
 
 type ActivityItemListProps = {
-  items: ActivityLog[];
+  filter: {
+    search: string;
+    sort: "asc" | "desc";
+  };
 };
 
 type ActivityRowProps = {
@@ -29,8 +33,18 @@ function ActivityRow({ item }: ActivityRowProps) {
   );
 }
 
-function ActivityList({ items }: ActivityItemListProps) {
-  if (!items.length) {
+function ActivityList({ filter }: ActivityItemListProps) {
+  const { data, isLoading, isError } = useGetActivityLogsQuery(filter);
+
+  if (isLoading) {
+    return <div>Loding...</div>;
+  }
+
+  if (isError) {
+    return <div>Something went wrong</div>;
+  }
+
+  if (!data.data.length) {
     return (
       <div className="w-full h-[85vh] flex items-center justify-center">
         <div className="flex flex-col items-center justify-center gap-4">
@@ -42,8 +56,8 @@ function ActivityList({ items }: ActivityItemListProps) {
 
   return (
     <div className="flex flex-col gap-2">
-      {items.map((item) => (
-        <ActivityRow item={item} />
+      {data.data.map((item: ActivityLog) => (
+        <ActivityRow key={item.id} item={item} />
       ))}
     </div>
   );

@@ -23,11 +23,26 @@ export const addLog = async (req: Request, _: Response, next: NextFunction) => {
 };
 
 export const getLogs = async (req: Request, res: Response, next: NextFunction) => {
-  const logs = await prismaClient.log.findMany({
+  const { search, sort } = req.query;
+
+  let filters: any = {
     orderBy: {
-      created_at: 'desc',
+      created_at: sort as "asc" | "desc" || "desc",
     }
-  });
+  };
+
+  if (search) {
+    filters = {
+      ...filters,
+      where: {
+        message: {
+          search: search as string,
+        }
+      },
+    }
+  }
+
+  const logs = await prismaClient.log.findMany(filters);
 
   next(new Successful(logs, "Logs Fetched successfully"));
 }

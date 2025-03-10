@@ -1,20 +1,15 @@
 import ActivityList from "@components/activity-list";
-import { useGetActivityLogsQuery } from "@store/api/logs-api";
+import { useFilter } from "@hooks/useFilter";
 
 function AuditLogsPage() {
-  const { data, isLoading, isError } = useGetActivityLogsQuery({});
-
-  if (isLoading) {
-    return <div>Loding...</div>;
-  }
-
-  if (isError) {
-    return <div>Something went wrong</div>;
-  }
+  const { render, search, sort } = useFilter();
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2">
-      <ActivityList items={data.data} />
+      <div className="flex flex-col gap-3">
+        {render()}
+        <ActivityList filter={{ search, sort }} />
+      </div>
     </div>
   );
 }

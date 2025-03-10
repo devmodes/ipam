@@ -33,7 +33,40 @@ export const getIPAddresses = async (
   res: Response,
   next: NextFunction
 ) => {
-  const ipAddresses = await prismaClient.ipAddress.findMany();
+  const { search, sort } = req.query;
+
+  let filters: any = {
+    orderBy: {
+      created_at: sort as "asc" | "desc" || "desc",
+    }
+  }
+
+  if (search) {
+    filters = {
+      ...filters,
+      where: {
+        OR: [
+          {
+            ip: {
+              search: search as string,
+            }
+          },
+          {
+            label: {
+              search: search as string,
+            }
+          },
+          {
+            comment: {
+              search: search as string,
+            }
+          }
+        ]
+      },
+    }
+  }
+
+  const ipAddresses = await prismaClient.ipAddress.findMany(filters);
 
   next(new Successful(ipAddresses));
 };
