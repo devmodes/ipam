@@ -10,7 +10,7 @@ import {
 import { Input } from "@components/ui/input";
 import { useDebounce } from "@hooks/useDebounce";
 import { Filters } from "@lib/types/filters";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export const useFilter = () => {
   const [search, setSearch] = useState("");
@@ -71,6 +71,11 @@ export const useFilter = () => {
       </div>
     );
   };
+
+  // go back to page 1 when changing the per page and search state to avoid getting no result unnecessarily
+  useEffect(() => {
+    setPage(1);
+  }, [perPage, search]);
 
   const filters: Filters = {
     search: debouncedSearch,

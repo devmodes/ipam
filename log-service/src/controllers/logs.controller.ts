@@ -26,7 +26,7 @@ export const getLogs = async (req: Request, res: Response, next: NextFunction) =
   const { search, sort = "desc", page = 1, per_page = 10 } = req.query;
 
   const skip = (Number(page) - 1) * Number(per_page);
-  const take = Number(page) * Number(per_page);
+  const take = Number(per_page);
 
   let filters: any = {
     orderBy: {
@@ -48,6 +48,19 @@ export const getLogs = async (req: Request, res: Response, next: NextFunction) =
   }
 
   const logs = await prismaClient.log.findMany(filters);
+  const logsCount = await prismaClient.log.count();
+  const totalPages = Math.ceil(logsCount / Number(per_page));
 
-  next(new Successful(logs, "Logs Fetched successfully"));
+  const paginationMeta = {
+    currentPage: Number(page),
+    hasPrevPage: Number(page) !== 1,
+    hasNextPage: Number(page) < totalPages,
+    totalRecords: logsCount,
+    totalPages: totalPages,
+  }
+
+  next(new Successful({
+    items: logs,
+    pagination_meta: paginationMeta,
+  }));
 }
