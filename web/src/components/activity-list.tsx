@@ -1,5 +1,6 @@
 import { Badge } from "@components/ui/badge";
 import { Card, CardHeader, CardTitle } from "@components/ui/card";
+import { Skeleton } from "@components/ui/skeleton";
 import { formatDateTime } from "@lib/helpers";
 import { ActivityLog } from "@lib/types/activity-log";
 import { useGetActivityLogsQuery } from "@store/api/logs-api";
@@ -37,7 +38,13 @@ function ActivityList({ filter }: ActivityItemListProps) {
   const { data, isLoading, isError } = useGetActivityLogsQuery(filter);
 
   if (isLoading) {
-    return <div>Loding...</div>;
+    return (
+      <div className="flex flex-col gap-4">
+        {Array.from({ length: 5 }).map((_, i) => (
+          <Skeleton key={i} className="h-14 rounded-lg" />
+        ))}
+      </div>
+    );
   }
 
   if (isError) {
