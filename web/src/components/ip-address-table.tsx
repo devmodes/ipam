@@ -10,6 +10,7 @@ import {
   TableHeader,
   TableRow,
 } from "@components/ui/table";
+import { formatDateTime } from "@lib/helpers";
 import { IPAddress } from "@lib/types/ip-address";
 import { useAuth } from "@providers/auth-provider";
 import { Edit3Icon, EyeIcon, TrashIcon } from "lucide-react";
@@ -31,10 +32,11 @@ function IPAddressTable({ items }: IPAddressTableProps) {
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead className="text-center">IP Address</TableHead>
-              <TableHead className="text-center">Label</TableHead>
-              <TableHead className="text-center">Comment</TableHead>
-              <TableHead className="text-center">Actions</TableHead>
+              <TableHead className="text-center">IP ADDRESS</TableHead>
+              <TableHead className="text-center">LABEL</TableHead>
+              <TableHead className="text-center">COMMENT</TableHead>
+              <TableHead className="text-center">DATE</TableHead>
+              <TableHead className="text-center"></TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -43,6 +45,9 @@ function IPAddressTable({ items }: IPAddressTableProps) {
                 <TableCell className="text-center">{item.ip}</TableCell>
                 <TableCell className="text-center">{item.label}</TableCell>
                 <TableCell className="text-center">{item.comment}</TableCell>
+                <TableCell className="text-center">
+                  {formatDateTime(item.created_at)}
+                </TableCell>
                 <TableCell className="text-center">
                   <Button
                     size="sm"
