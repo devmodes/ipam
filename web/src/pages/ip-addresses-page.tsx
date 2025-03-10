@@ -32,7 +32,7 @@ function IPAddressesPage() {
           </TableHeader>
           <TableBody>
             {Array.from({ length: 10 }).map((_, i) => (
-              <TableRow className="h-14">
+              <TableRow className="h-14" key={i}>
                 <TableCell>
                   <Skeleton className="h-2 rounded-full" />
                 </TableCell>
