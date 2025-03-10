@@ -1,18 +1,14 @@
 import IPAddressTable from "@components/ip-address-table";
-import { useIpAddressListQuery } from "@store/api/ip-address-api";
+import { useFilter } from "@hooks/useFilter";
 
 function IPAddressesPage() {
-  const { data, isLoading, isError } = useIpAddressListQuery({});
-
-  if (isLoading) {
-    return <div>Loading....</div>;
-  }
-
-  if (isError && !data) {
-    return <div>Something went wrong</div>;
-  }
-
-  return <IPAddressTable items={data?.data || []} />;
+  const { render, search, sort } = useFilter();
+  return (
+    <div>
+      <div className="mb-3 grid grid-cols-1 md:grid-cols-2">{render()}</div>
+      <IPAddressTable filters={{ search, sort }} />
+    </div>
+  );
 }
 
 export default IPAddressesPage;

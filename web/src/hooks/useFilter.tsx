@@ -25,7 +25,7 @@ export const useFilter = () => {
           onChange={(e) => setSearch(e.target.value)}
         />
         <DropdownMenu>
-          <DropdownMenuTrigger>
+          <DropdownMenuTrigger asChild>
             <Button variant="outline">
               {sort === "asc" ? "Oldest to Latest" : "Latest to Oldest"}
             </Button>

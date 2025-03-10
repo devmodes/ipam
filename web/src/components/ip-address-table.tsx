@@ -14,19 +14,32 @@ import {
 } from "@components/ui/table";
 import { IPAddress } from "@lib/types/ip-address";
 import { useAuth } from "@providers/auth-provider";
+import { useIpAddressListQuery } from "@store/api/ip-address-api";
 import { Edit3Icon, EyeIcon, TrashIcon } from "lucide-react";
 import React from "react";
 import { useNavigate } from "react-router-dom";
 
 type IPAddressTableProps = {
-  items: IPAddress[];
+  filters: {
+    search: string;
+    sort: "asc" | "desc";
+  };
 };
 
-function IPAddressTable({ items }: IPAddressTableProps) {
+function IPAddressTable({ filters }: IPAddressTableProps) {
   const { isAdmin, user } = useAuth();
+  const { data, isLoading, isError } = useIpAddressListQuery(filters);
   const navigate = useNavigate();
 
-  if (!items.length) {
+  if (isLoading) {
+    return <div>Loading....</div>;
+  }
+
+  if (isError && !data) {
+    return <div>Something went wrong</div>;
+  }
+
+  if (!data.data.length) {
     return (
       <div className="w-full h-[85vh] flex items-center justify-center">
         <div className="flex flex-col items-center justify-center gap-4">
@@ -60,7 +73,7 @@ function IPAddressTable({ items }: IPAddressTableProps) {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {items.map((item) => (
+            {data.data.map((item: IPAddress) => (
               <TableRow key={item.id}>
                 <TableCell className="text-center">{item.ip}</TableCell>
                 <TableCell className="text-center">{item.label}</TableCell>
