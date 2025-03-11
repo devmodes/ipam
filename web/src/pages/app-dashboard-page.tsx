@@ -6,6 +6,8 @@ function AppDashboardPage() {
   const { data, isError, isFetching } = useIpAddressListQuery({
     search: "",
     sort: "desc",
+    per_page: 10,
+    page: 1,
   });
 
   if (isFetching) {
@@ -31,7 +33,7 @@ function AppDashboardPage() {
     <div className="flex flex-col gap-6">
       <h2 className="text-lg font-bold">IP Address:</h2>
       <div className="grid grid-cols-1 md:grid-cols-2">
-        <IPAddressList items={data.data} />
+        <IPAddressList items={data.data.items} />
       </div>
     </div>
   );

@@ -5,6 +5,7 @@ import AuditLogsPage from "@pages/audit-logs-page";
 import HomePage from "@pages/home-page";
 import IPAddressPage from "@pages/ip-address-page";
 import IPAddressesPage from "@pages/ip-addresses-page";
+import NotFoundPage from "@pages/not-found-page";
 import SigninPage from "@pages/signin-page";
 import SignupPage from "@pages/signup-page";
 import AdminGuard from "@routes/admin-guard";
@@ -15,21 +16,17 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 function AppRouter() {
   return (
     <BrowserRouter>
-      {/* Public Routes */}
       <Routes>
+        {/* Public Routes */}
         <Route path="/" element={<HomePage />} />
-      </Routes>
 
-      {/* Strict Guest Only Routes */}
-      <Routes>
+        {/* Strict Guest Only Routes */}
         <Route element={<GuestOnlyGuard />}>
           <Route path="/signin" element={<SigninPage />} />
           <Route path="/signup" element={<SignupPage />} />
         </Route>
-      </Routes>
 
-      {/* Private Routes */}
-      <Routes>
+        {/* Private Routes */}
         <Route element={<AuthGuard />}>
           <Route path="/app" element={<DashboardLayout />}>
             <Route element={<AdminGuard />}>
@@ -41,6 +38,9 @@ function AppRouter() {
             <Route path="account" element={<AccountsPage />} />
           </Route>
         </Route>
+
+        {/* Misc pages */}
+        <Route path="*" element={<NotFoundPage />} />
       </Routes>
     </BrowserRouter>
   );

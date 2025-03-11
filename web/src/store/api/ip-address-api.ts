@@ -19,7 +19,7 @@ export const ipAddressApi = api.injectEndpoints({
       query: (filter: Filters) => ({
         url: `/ip-addresses?search=${filter.search || ""}&sort=${
           filter.sort || "desc"
-        }&page=${filter.page}&per_page=${filter.per_page}`,
+        }&page=${filter.page || 1}&per_page=${filter.per_page || 10}`,
       }),
       providesTags: [
         { type: "ipAddress", id: "list" },
