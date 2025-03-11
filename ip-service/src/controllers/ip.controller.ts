@@ -1,4 +1,4 @@
-import { NotFoundException, UnauthorizedException } from "@utils/exceptions";
+import { NotFoundException, UnauthorizedException, UnprocessableEntitiesException } from "@utils/exceptions";
 import { generateLogMeta, logger } from "@utils/logger";
 import { prismaClient } from "@utils/prisma";
 import { Created, Successful } from "@utils/success";
@@ -13,6 +13,18 @@ export const createIPAddress = async (
 ) => {
   const { label, ip, comment } = req.body;
   const user = req.user as User;
+
+  const alreadyExisted = await prismaClient.ipAddress.findFirst({
+    where: {
+      ip,
+    },
+  });
+
+  if (alreadyExisted) {
+    throw new UnprocessableEntitiesException("Unprocessable Entries", {
+      ip: "The IP Address already in use",
+    });
+  }
 
   const ipAddress = await prismaClient.ipAddress.create({
     data: {
@@ -139,6 +151,18 @@ export const updateIPAddress = async (
       ...req.body,
     },
   });
+
+  const alreadyExists = await prismaClient.ipAddress.findFirst({
+    where: {
+      ip: req.body.ip,
+    },
+  });
+
+  if (alreadyExists && alreadyExists.id !== prevRecord.id) {
+    throw new UnprocessableEntitiesException("Unprocessable Entries", {
+      ip: "The IP Address already in use",
+    });
+  }
 
   const prev = {
     id: prevRecord.id,

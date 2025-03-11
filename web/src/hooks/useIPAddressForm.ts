@@ -21,7 +21,7 @@ type IPAddressFormArgs = {
   id?: string;
 };
 
-export const useIPAddressForm = ({ defaultValues, id }: IPAddressFormArgs) => {
+export const useIPAddressForm: any = ({ defaultValues, id }: IPAddressFormArgs) => {
   const [updateRecord] = useUpdateIPAddressMutation();
   const [createRecord] = useCreateIPAddressMutation();
   const form = useForm<IPAddressForm>({
@@ -44,7 +44,7 @@ export const useIPAddressForm = ({ defaultValues, id }: IPAddressFormArgs) => {
           comment: data.comment || "",
         } as IPAddress;
 
-        await updateRecord(body);
+        await updateRecord(body).unwrap();
       } else {
         const body = {
           label: data.label,
@@ -52,10 +52,12 @@ export const useIPAddressForm = ({ defaultValues, id }: IPAddressFormArgs) => {
           comment: data.comment || "",
         } as IPAddress;
 
-        await createRecord(body);
+        await createRecord(body).unwrap();
       }
     } catch (error: any) {
-      handleError(setError, error);
+      if(error.status === 422) {
+        handleError(setError, error.data.errors);
+      }
     }
   };
 

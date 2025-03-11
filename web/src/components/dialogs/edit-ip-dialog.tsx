@@ -39,7 +39,9 @@ function EditIPDialog({ item, children }: EditIPDialogProps) {
   });
 
   useEffect(() => {
-    setOpen(false);
+    if (onSuccess) {
+      setOpen(false);
+    }
   }, [onSuccess]);
 
   return (
