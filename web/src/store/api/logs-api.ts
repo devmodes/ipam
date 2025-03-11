@@ -7,7 +7,7 @@ export const logsApi = api.injectEndpoints({
       query: (filters: Filters) => ({
         url: `/activity/logs?search=${filters.search || ""}&sort=${
           filters.sort || "desc"
-        }`,
+        }&page=${filters.page}&per_page=${filters.per_page}`,
       }),
       providesTags: [{ type: "logs", id: "list" }],
     }),

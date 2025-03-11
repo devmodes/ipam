@@ -1,4 +1,4 @@
-import { NotFoundException, UnauthorizedException } from "@utils/exceptions";
+import { NotFoundException, UnauthorizedException, UnprocessableEntitiesException } from "@utils/exceptions";
 import { generateLogMeta, logger } from "@utils/logger";
 import { prismaClient } from "@utils/prisma";
 import { Created, Successful } from "@utils/success";
@@ -13,6 +13,18 @@ export const createIPAddress = async (
 ) => {
   const { label, ip, comment } = req.body;
   const user = req.user as User;
+
+  const alreadyExisted = await prismaClient.ipAddress.findFirst({
+    where: {
+      ip,
+    },
+  });
+
+  if (alreadyExisted) {
+    throw new UnprocessableEntitiesException("Unprocessable Entries", {
+      ip: "The IP Address already in use",
+    });
+  }
 
   const ipAddress = await prismaClient.ipAddress.create({
     data: {
@@ -33,12 +45,17 @@ export const getIPAddresses = async (
   res: Response,
   next: NextFunction
 ) => {
-  const { search, sort } = req.query;
+  const { search, sort = "desc", page = 1, per_page = 10 } = req.query;
+
+  const skip = (Number(page) - 1) * Number(per_page);
+  const take = Number(per_page);
 
   let filters: any = {
     orderBy: {
       created_at: sort as "asc" | "desc" || "desc",
-    }
+    },
+    skip,
+    take,
   }
 
   if (search) {
@@ -67,8 +84,21 @@ export const getIPAddresses = async (
   }
 
   const ipAddresses = await prismaClient.ipAddress.findMany(filters);
+  const ipAddressCount = await prismaClient.ipAddress.count();
+  const totalPages = Math.ceil(ipAddressCount / Number(per_page));
 
-  next(new Successful(ipAddresses));
+  const paginationMeta = {
+    currentPage: Number(page),
+    hasPrevPage: Number(page) !== 1,
+    hasNextPage: Number(page) < totalPages,
+    totalRecords: ipAddressCount,
+    totalPages: totalPages,
+  }
+
+  next(new Successful({
+    items: ipAddresses,
+    pagination_meta: paginationMeta,
+  }));
 };
 
 export const getIPAddress = async (
@@ -121,6 +151,18 @@ export const updateIPAddress = async (
       ...req.body,
     },
   });
+
+  const alreadyExists = await prismaClient.ipAddress.findFirst({
+    where: {
+      ip: req.body.ip,
+    },
+  });
+
+  if (alreadyExists && alreadyExists.id !== prevRecord.id) {
+    throw new UnprocessableEntitiesException("Unprocessable Entries", {
+      ip: "The IP Address already in use",
+    });
+  }
 
   const prev = {
     id: prevRecord.id,

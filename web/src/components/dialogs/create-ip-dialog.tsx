@@ -35,7 +35,9 @@ function CreateIPDialog({ children }: CreateIPDialogProps) {
   });
 
   useEffect(() => {
-    setOpen(false);
+    if (onSuccess) {
+      setOpen(false);
+    }
   }, [onSuccess]);
 
   return (
