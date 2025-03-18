@@ -39,55 +39,65 @@ function IPAddressTable({ items }: IPAddressTableProps) {
               <TableHead className="text-center"></TableHead>
             </TableRow>
           </TableHeader>
-          <TableBody>
-            {items.map((item: IPAddress) => (
-              <TableRow key={item.id}>
-                <TableCell className="text-center">{item.ip}</TableCell>
-                <TableCell className="text-center">{item.label}</TableCell>
-                <TableCell className="text-center">{item.comment}</TableCell>
-                <TableCell className="text-center">
-                  {formatDateTime(item.created_at)}
-                </TableCell>
-                <TableCell className="text-center">
-                  <Button
-                    size="sm"
-                    variant="ghost"
-                    onClick={() => navigate(`/app/ip-address/${item.id}`)}
-                  >
-                    <EyeIcon />
-                  </Button>
-                  {!isAdmin && user.id !== item.created_by && (
-                    <EditIPLabelDialog item={item}>
-                      <Button size="sm" variant="ghost">
-                        <Edit3Icon />
-                      </Button>
-                    </EditIPLabelDialog>
-                  )}
-                  {!isAdmin && user.id === item.created_by && (
-                    <EditIPDialog item={item}>
-                      <Button size="sm" variant="ghost">
-                        <Edit3Icon />
-                      </Button>
-                    </EditIPDialog>
-                  )}
-                  {isAdmin && (
-                    <React.Fragment>
+          {items.length ? (
+            <TableBody>
+              {items.map((item: IPAddress) => (
+                <TableRow key={item.id}>
+                  <TableCell className="text-center">{item.ip}</TableCell>
+                  <TableCell className="text-center">{item.label}</TableCell>
+                  <TableCell className="text-center">{item.comment}</TableCell>
+                  <TableCell className="text-center">
+                    {formatDateTime(item.created_at)}
+                  </TableCell>
+                  <TableCell className="text-center">
+                    <Button
+                      size="sm"
+                      variant="ghost"
+                      onClick={() => navigate(`/app/ip-address/${item.id}`)}
+                    >
+                      <EyeIcon />
+                    </Button>
+                    {!isAdmin && user.id !== item.created_by && (
+                      <EditIPLabelDialog item={item}>
+                        <Button size="sm" variant="ghost">
+                          <Edit3Icon />
+                        </Button>
+                      </EditIPLabelDialog>
+                    )}
+                    {!isAdmin && user.id === item.created_by && (
                       <EditIPDialog item={item}>
                         <Button size="sm" variant="ghost">
                           <Edit3Icon />
                         </Button>
                       </EditIPDialog>
-                      <DeleteIPDialog item={item}>
-                        <Button size="sm" variant="ghost">
-                          <TrashIcon />
-                        </Button>
-                      </DeleteIPDialog>
-                    </React.Fragment>
-                  )}
+                    )}
+                    {isAdmin && (
+                      <React.Fragment>
+                        <EditIPDialog item={item}>
+                          <Button size="sm" variant="ghost">
+                            <Edit3Icon />
+                          </Button>
+                        </EditIPDialog>
+                        <DeleteIPDialog item={item}>
+                          <Button size="sm" variant="ghost">
+                            <TrashIcon />
+                          </Button>
+                        </DeleteIPDialog>
+                      </React.Fragment>
+                    )}
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          ) : (
+            <TableBody>
+              <TableRow>
+                <TableCell colSpan={5} className="p-10 text-center">
+                  There are no recorded IP Address yet
                 </TableCell>
               </TableRow>
-            ))}
-          </TableBody>
+            </TableBody>
+          )}
         </Table>
       </div>
     </div>

@@ -6,7 +6,7 @@ type ActivityItemListProps = {
 };
 
 function ActivityList({ items }: ActivityItemListProps) {
-  return (
+  return items.length ? (
     <div className="flex flex-col gap-2 p-4 rounded-lg bg-zinc-900">
       {items.map((item) => (
         <div key={item.id}>
@@ -19,6 +19,10 @@ function ActivityList({ items }: ActivityItemListProps) {
           <span>{item.message}</span>
         </div>
       ))}
+    </div>
+  ) : (
+    <div className="flex items-center justify-center h-40">
+      <h2 className="text-lg">There is no activity to log yet!</h2>
     </div>
   );
 }

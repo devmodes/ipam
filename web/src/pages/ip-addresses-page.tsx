@@ -57,7 +57,7 @@ function IPAddressesPage() {
     return <div>Something went wrong</div>;
   }
 
-  if (!data.data.items.length) {
+  if (!data.data.items.length && !filters.search) {
     return (
       <div className="w-full h-[85vh] flex items-center justify-center">
         <div className="flex flex-col items-center justify-center gap-4">
