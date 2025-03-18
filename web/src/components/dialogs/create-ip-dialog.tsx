@@ -81,24 +81,6 @@ function CreateIPDialog({ children }: CreateIPDialogProps) {
                   )}
                 />
               </div>
-              <div className="grid my-1 gap-2">
-                <FormField
-                  name="comment"
-                  control={form.control}
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Comment</FormLabel>
-                      <FormControl>
-                        <Input
-                          placeholder="Comment here (optional)"
-                          {...field}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </div>
             </div>
             <DialogFooter>
               <DialogClose asChild>

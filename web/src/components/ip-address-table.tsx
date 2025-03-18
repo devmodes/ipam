@@ -34,7 +34,6 @@ function IPAddressTable({ items }: IPAddressTableProps) {
             <TableRow>
               <TableHead className="text-center">IP ADDRESS</TableHead>
               <TableHead className="text-center">LABEL</TableHead>
-              <TableHead className="text-center">COMMENT</TableHead>
               <TableHead className="text-center">DATE</TableHead>
               <TableHead className="text-center"></TableHead>
             </TableRow>
@@ -45,7 +44,6 @@ function IPAddressTable({ items }: IPAddressTableProps) {
                 <TableRow key={item.id}>
                   <TableCell className="text-center">{item.ip}</TableCell>
                   <TableCell className="text-center">{item.label}</TableCell>
-                  <TableCell className="text-center">{item.comment}</TableCell>
                   <TableCell className="text-center">
                     {formatDateTime(item.created_at)}
                   </TableCell>
