@@ -23,7 +23,6 @@ type IPAddressTableProps = {
 
 function IPAddressTable({ items }: IPAddressTableProps) {
   const { isAdmin, user } = useAuth();
-
   const navigate = useNavigate();
 
   return (
@@ -42,9 +41,13 @@ function IPAddressTable({ items }: IPAddressTableProps) {
             <TableBody>
               {items.map((item: IPAddress) => (
                 <TableRow key={item.id}>
-                  <TableCell className="text-center">{item.ip}</TableCell>
-                  <TableCell className="text-center">{item.label}</TableCell>
-                  <TableCell className="text-center">
+                  <TableCell className="text-center text-wrap">
+                    {item.label}
+                  </TableCell>
+                  <TableCell className="text-center text-wrap">
+                    {item.ip}
+                  </TableCell>
+                  <TableCell className="text-center text-wrap">
                     {formatDateTime(item.created_at)}
                   </TableCell>
                   <TableCell className="text-center">

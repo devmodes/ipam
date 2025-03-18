@@ -21,7 +21,7 @@ export const useFilter = () => {
 
   const render = () => {
     return (
-      <div className="flex items-center gap-3">
+      <div className="flex items-center gap-3 flex-wrap md:flex-nowrap">
         <Input
           placeholder="Search..."
           value={search}
@@ -29,7 +29,7 @@ export const useFilter = () => {
         />
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="outline">
+            <Button className="flex-1" variant="outline">
               {sort === "asc" ? "Oldest to Latest" : "Latest to Oldest"}
             </Button>
           </DropdownMenuTrigger>
@@ -48,7 +48,9 @@ export const useFilter = () => {
 
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="outline">Per Page {perPage}</Button>
+            <Button className="flex-1" variant="outline">
+              Per Page {perPage}
+            </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent>
             <DropdownMenuGroup>

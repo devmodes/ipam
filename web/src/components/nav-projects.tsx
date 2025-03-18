@@ -7,7 +7,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@components/ui/sidebar";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 
 export function NavContents({
   projects,
@@ -18,6 +18,9 @@ export function NavContents({
     icon: LucideIcon;
   }[];
 }) {
+  const location = useLocation();
+  const { pathname } = location;
+
   return (
     <SidebarGroup className="group-data-[collapsible=icon]:hidden">
       <SidebarGroupLabel>Contents</SidebarGroupLabel>
@@ -25,7 +28,10 @@ export function NavContents({
         {projects.map((item) => (
           <SidebarMenuItem key={item.name}>
             <SidebarMenuButton asChild>
-              <Link to={item.url}>
+              <Link
+                to={item.url}
+                className={`${pathname === item.url ? "bg-muted" : ""}`}
+              >
                 <item.icon />
                 <span>{item.name}</span>
               </Link>

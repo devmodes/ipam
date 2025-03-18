@@ -1,5 +1,6 @@
 import CreateIPDialog from "@components/dialogs/create-ip-dialog";
 import IPAddressTable from "@components/ip-address-table";
+import IPList from "@components/ip-list";
 import SimplePagination from "@components/simple-pagination";
 import { Button } from "@components/ui/button";
 import { Skeleton } from "@components/ui/skeleton";
@@ -12,11 +13,13 @@ import {
   TableRow,
 } from "@components/ui/table";
 import { useFilter } from "@hooks/useFilter";
+import { useIsMobile } from "@hooks/useIsMobile";
 import { useIpAddressListQuery } from "@store/api/ip-address-api";
 
 function IPAddressesPage() {
   const { render, filters, setPage } = useFilter();
   const { data, isLoading, isError } = useIpAddressListQuery(filters);
+  const isMobile = useIsMobile();
 
   if (isLoading) {
     return (
@@ -74,11 +77,17 @@ function IPAddressesPage() {
     <div>
       <div className="flex justify-between flex-wrap">
         <CreateIPDialog>
-          <Button size="sm">New IP Address</Button>
+          <Button className="mb-4 md:mb-0" size="sm">
+            New IP Address
+          </Button>
         </CreateIPDialog>
-        <div className="">{render()}</div>
+        <div>{render()}</div>
       </div>
-      <IPAddressTable items={data.data.items} />
+      {isMobile ? (
+        <IPList items={data.data.items} />
+      ) : (
+        <IPAddressTable items={data.data.items} />
+      )}
       <div className="mt-3">
         <SimplePagination
           onChange={(p) => setPage(p)}

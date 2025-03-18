@@ -97,12 +97,6 @@ function IPAddressPage() {
               </TableRow>
               <TableRow className="border-none">
                 <TableCell className="text-muted-foreground font-medium">
-                  Comment:{" "}
-                </TableCell>
-                <TableCell className="font-bold">{data.data.comment}</TableCell>
-              </TableRow>
-              <TableRow className="border-none">
-                <TableCell className="text-muted-foreground font-medium">
                   Creation Date:{" "}
                 </TableCell>
                 <TableCell className="font-bold">
