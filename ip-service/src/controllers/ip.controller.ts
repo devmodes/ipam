@@ -59,23 +59,26 @@ export const getIPAddresses = async (
   }
 
   if (search) {
+    const _search = search as string;
+    const keyword = _search.trim().split(" ").join(" & ");
+
     filters = {
       ...filters,
       where: {
         OR: [
           {
             ip: {
-              search: search as string,
+              search: keyword,
             }
           },
           {
             label: {
-              search: search as string,
+              search: keyword,
             }
           },
           {
             comment: {
-              search: search as string,
+              search: keyword,
             }
           }
         ]

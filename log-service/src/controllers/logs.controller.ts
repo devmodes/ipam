@@ -25,6 +25,8 @@ export const addLog = async (req: Request, _: Response, next: NextFunction) => {
 export const getLogs = async (req: Request, res: Response, next: NextFunction) => {
   const { search, sort = "desc", page = 1, per_page = 10 } = req.query;
 
+  const _search = search as string;
+
   const skip = (Number(page) - 1) * Number(per_page);
   const take = Number(per_page);
 
@@ -41,7 +43,7 @@ export const getLogs = async (req: Request, res: Response, next: NextFunction) =
       ...filters,
       where: {
         message: {
-          search: search as string,
+          search: _search.trim().split(" ").join(" & "),
         }
       },
     }
